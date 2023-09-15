@@ -30,7 +30,7 @@
         </activity>
 
         <service android:name=".service.MusicService" />
-
+        <receiver android:name=".broadcastReceiver.MyBroadcastReceiver"/>
     </application>
 
 </manifest>

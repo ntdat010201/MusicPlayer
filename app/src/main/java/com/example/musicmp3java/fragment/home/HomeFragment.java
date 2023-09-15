@@ -2,11 +2,9 @@ package com.example.musicmp3java.fragment.home;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -27,16 +25,14 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.musicmp3java.fragment.play.PlayerActivity;
 import com.example.musicmp3java.databinding.FragmentHomeBinding;
 import com.example.musicmp3java.fragment.home.adapter.RcvHomeAdapter;
 import com.example.musicmp3java.fragment.home.model.SongModel;
+import com.example.musicmp3java.fragment.play.PlayerActivity;
 import com.example.musicmp3java.manager.MusicManager;
-import com.example.musicmp3java.service.MusicService;
 
 import java.io.File;
 import java.util.ArrayList;
