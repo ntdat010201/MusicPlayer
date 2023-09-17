@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".notification.MyApplication"
@@ -30,7 +31,8 @@
         </activity>
 
         <service android:name=".service.MusicService" />
-        <receiver android:name=".broadcastReceiver.MyBroadcastReceiver"/>
+
+        <receiver android:name=".broadcastReceiver.MyBroadcastReceiver" />
     </application>
 
 </manifest>

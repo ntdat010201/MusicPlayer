@@ -29,6 +29,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.musicmp3java.databinding.FragmentHomeBinding;
+import com.example.musicmp3java.dialog.DialogBottomSheetHome;
 import com.example.musicmp3java.fragment.home.adapter.RcvHomeAdapter;
 import com.example.musicmp3java.fragment.home.model.SongModel;
 import com.example.musicmp3java.fragment.play.PlayerActivity;
@@ -255,6 +256,11 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
         musicManager.setPosition(position);
         showPlayerView();
         homeSongNameView();
+    }
+
+    @Override
+    public void showDialogHome() {
+        DialogBottomSheetHome.showDialogBTHome(requireContext());
     }
 
 

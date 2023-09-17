@@ -18,7 +18,6 @@ import com.example.musicmp3java.fragment.home.model.SongModel;
 import com.example.musicmp3java.utils.FileUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHomeViewHolder> implements Filterable {
     private IOnClickList iOnClickList;
@@ -60,6 +59,12 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
         Glide.with(context).load(songModelFilter.get(position).getImageSong())
                 .placeholder(context.getDrawable(R.drawable.bg)).into(holder.binding.artworkView);
 
+        holder.binding.moreVert.setOnClickListener(view1 -> {
+            iOnClickList.showDialogHome();
+            Log.d("DAT", "onBindViewHolder: " + position);
+        });
+
+
         holder.itemView.setOnClickListener(view -> {
             iOnClickList.onClick(holder.getAdapterPosition());
 
@@ -83,7 +88,7 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
                 } else {
                     ArrayList<SongModel> filteredList = new ArrayList<>();
                     for (SongModel row : songModels) {
-                        if (row.getTitle().toLowerCase().startsWith(charString.toLowerCase()) ) {
+                        if (row.getTitle().toLowerCase().startsWith(charString.toLowerCase())) {
                             filteredList.add(row);
                         }
                     }
@@ -120,5 +125,6 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
 
     public interface IOnClickList {
         void onClick(int position);
+        void showDialogHome();
     }
 }

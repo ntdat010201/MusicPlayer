@@ -175,11 +175,22 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void startService() {
+/*
         Intent intent = new Intent(this, MusicService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             this.startForegroundService(intent);
         } else {
             this.startService(intent);
+        }
+*/
+
+        Intent intent = new Intent(this, MusicService.class);
+        try {
+            startService(intent);
+        } catch (Exception e) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                startForegroundService(intent);
+            }
         }
     }
 

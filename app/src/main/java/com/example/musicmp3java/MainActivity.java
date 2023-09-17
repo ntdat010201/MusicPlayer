@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData() {
         myViewPagerAdapter = new MyViewPagerAdapter(this);
-
     }
 
     private void initView() {
@@ -42,12 +41,15 @@ public class MainActivity extends AppCompatActivity {
 
             switch (position) {
                 case 0:
+                    tab.setIcon(R.drawable.ic_small_icon);
                     tab.setText("Home");
                     break;
                 case 1:
+                    tab.setIcon(R.drawable.ic_small_icon);
                     tab.setText("Favorites");
                     break;
                 case 2:
+                    tab.setIcon(R.drawable.ic_small_icon);
                     tab.setText("Individual");
                     break;
 

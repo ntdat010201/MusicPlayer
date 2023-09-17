@@ -64,5 +64,15 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/durationView" />
 
+        <ImageView
+            android:id="@+id/moreVert"
+            android:layout_marginRight="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_more_vert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
