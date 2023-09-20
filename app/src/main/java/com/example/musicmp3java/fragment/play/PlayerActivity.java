@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -21,12 +20,12 @@ import com.example.musicmp3java.manager.MusicManager;
 import com.example.musicmp3java.service.MusicService;
 import com.example.musicmp3java.utils.FileUtils;
 
+import java.io.IOException;
+
 public class PlayerActivity extends AppCompatActivity {
     private ActivityPlayerBinding binding;
-    private boolean isServiceConnection;
     private MusicManager musicManager;
     private MediaPlayer mediaPlayer;
-
 
     public PlayerActivity() {
         musicManager = MusicManager.getInstance();
@@ -47,22 +46,18 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        checkAnimation();
+        upDateView();
         startService();
-        showLayoutPlay();
         songNameView();
         setArtworkView();
     }
 
     private void initListener() {
-        playMusic();
         isPlayOrPause();
         isNext();
         isPrevious();
         clickPlayListBtn();
-    }
-
-    private void showLayoutPlay() {
-        binding.activityPlayer.setVisibility(View.VISIBLE);
     }
 
     private void setSeekBar() {
@@ -75,10 +70,11 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void seekBarListener() {
         binding.seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            //            int progressValue = 0;
+            int progressValue = 0;
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-//                progressValue = seekBar.getProgress();
+                progressValue = seekBar.getProgress();
             }
 
             @Override
@@ -88,11 +84,9 @@ public class PlayerActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                mediaPlayer.seekTo(binding.seekbar.getProgress());
-
-//                seekBar.setProgress(progressValue);
-//                binding.progressView.setText(FileUtils.getReadableTime(progressValue));
-//                mediaPlayer.seekTo(progressValue);
+                seekBar.setProgress(progressValue);
+                binding.progressView.setText(FileUtils.getReadableTime(progressValue));
+                mediaPlayer.seekTo(progressValue);
             }
         });
     }
@@ -110,9 +104,6 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void clickPlayListBtn() {
         binding.playlistBtn.setOnClickListener(view -> {
-            if (binding.activityPlayer.getVisibility() == View.VISIBLE) {
-                binding.activityPlayer.setVisibility(View.GONE);
-            }
             onBackPressed();
         });
     }
@@ -127,12 +118,14 @@ public class PlayerActivity extends AppCompatActivity {
         binding.artworkView.setAnimation(loadRotation());
     }
 
-    private void playMusic() {
-        musicManager.play();
-        setSeekBar();
-        seekBarListener();
-        binding.playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause_circle, 0, 0, 0);
-        binding.artworkView.startAnimation(loadRotation());
+    private void checkAnimation() {
+        if (mediaPlayer.isPlaying()) {
+            binding.playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause_circle, 0, 0, 0);
+            binding.artworkView.startAnimation(loadRotation());
+        } else {
+            binding.playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_play_circle, 0, 0, 0);
+            binding.artworkView.clearAnimation();
+        }
     }
 
     private void isPlayOrPause() {
@@ -152,7 +145,12 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void isNext() {
         binding.skipNextBtn.setOnClickListener(view -> {
+            mediaPlayer.reset();
             musicManager.next();
+            mediaPlayer.setOnPreparedListener(mediaPlayer -> {
+                mediaPlayer.start();
+                upDateView();
+            });
             binding.playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause_circle, 0, 0, 0);
             binding.artworkView.startAnimation(loadRotation());
         });
@@ -160,7 +158,12 @@ public class PlayerActivity extends AppCompatActivity {
 
     private void isPrevious() {
         binding.skipPreviousBtn.setOnClickListener(view -> {
+            mediaPlayer.reset();
             musicManager.previous();
+            mediaPlayer.setOnPreparedListener(mediaPlayer -> {
+                mediaPlayer.start();
+                upDateView();
+            });
             binding.playPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause_circle, 0, 0, 0);
             binding.artworkView.startAnimation(loadRotation());
         });
@@ -175,24 +178,19 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void startService() {
-/*
         Intent intent = new Intent(this, MusicService.class);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             this.startForegroundService(intent);
         } else {
             this.startService(intent);
         }
-*/
-
-        Intent intent = new Intent(this, MusicService.class);
-        try {
-            startService(intent);
-        } catch (Exception e) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                startForegroundService(intent);
-            }
-        }
     }
 
+    private void upDateView() {
+        songNameView();
+        setArtworkView();
+        setSeekBar();
+        seekBarListener();
+    }
 
 }

@@ -14,7 +14,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import com.example.musicmp3java.Const;
+import com.example.musicmp3java.utils.Const;
 import com.example.musicmp3java.R;
 import com.example.musicmp3java.fragment.home.model.SongModel;
 import com.example.musicmp3java.service.MusicService;
@@ -37,6 +37,7 @@ public class MyNotification {
         PendingIntent intentPrev = PendingIntent.getBroadcast(context, 1, new Intent(Const.ACTION_PREV), PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent intentNext = PendingIntent.getBroadcast(context, 2, new Intent(Const.ACTION_NEXT), PendingIntent.FLAG_UPDATE_CURRENT);
         PendingIntent intentPause = PendingIntent.getBroadcast(context, 3, new Intent(Const.ACTION_PAUSE), PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent intentClose = PendingIntent.getBroadcast(context, 4, new Intent(Const.ACTION_CLOSE), PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         MediaSessionCompat sessionCompat = new MediaSessionCompat(context, "tag");
@@ -48,8 +49,8 @@ public class MyNotification {
                 //icon play
                 .addAction(R.drawable.ic_skip_previous, "Previous", intentPrev)  //0
                 .addAction(R.drawable.ic_pause_circle, "Pause", intentPause)     //1
-                .addAction(R.drawable.ic_skip_next, "Next", intentNext)         //2
-                .addAction(R.drawable.ic_close, "close", null)              //3
+                .addAction(R.drawable.ic_skip_next, "Next", intentNext)          //2
+                .addAction(R.drawable.ic_close, "close", intentClose)            //3
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(1 /* #1: pause button */)
                         .setMediaSession(sessionCompat.getSessionToken()))

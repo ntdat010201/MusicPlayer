@@ -1,10 +1,10 @@
 package com.example.musicmp3java.broadcastReceiver;
 
-import static com.example.musicmp3java.Const.ACTION_CLOSE;
-import static com.example.musicmp3java.Const.ACTION_NEXT;
-import static com.example.musicmp3java.Const.ACTION_PAUSE;
-import static com.example.musicmp3java.Const.ACTION_PLAY;
-import static com.example.musicmp3java.Const.ACTION_PREV;
+import static com.example.musicmp3java.utils.Const.ACTION_CLOSE;
+import static com.example.musicmp3java.utils.Const.ACTION_NEXT;
+import static com.example.musicmp3java.utils.Const.ACTION_PAUSE;
+import static com.example.musicmp3java.utils.Const.ACTION_PLAY;
+import static com.example.musicmp3java.utils.Const.ACTION_PREV;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,7 +22,6 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("DAT", "onReceive: ");
         switch (intent.getAction()) {
             case ACTION_PREV:
                 service.previous();

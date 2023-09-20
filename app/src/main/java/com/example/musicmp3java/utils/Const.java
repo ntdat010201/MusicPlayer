@@ -1,4 +1,4 @@
-package com.example.musicmp3java;
+package com.example.musicmp3java.utils;
 
 public interface Const {
 

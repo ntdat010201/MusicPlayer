@@ -1,9 +1,8 @@
-package com.example.musicmp3java.fragment.home.adapter;
+package com.example.musicmp3java.fragment.favorites.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -13,23 +12,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.musicmp3java.R;
-import com.example.musicmp3java.databinding.ItemRcvHomeBinding;
+import com.example.musicmp3java.databinding.ItemRcvFavoritesBinding;
 import com.example.musicmp3java.fragment.home.model.SongModel;
 import com.example.musicmp3java.utils.FileUtils;
 
 import java.util.ArrayList;
 
-public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHomeViewHolder> implements Filterable {
-    private IOnClickList iOnClickList;
-
-    private Context context;
+public class RcvFavoritesAdapter extends RecyclerView.Adapter<RcvFavoritesAdapter.songFavoritesViewHolder> implements Filterable {
     private ArrayList<SongModel> songModels;
+    private Context context;
     private ArrayList<SongModel> songModelFilter;
 
-    public RcvHomeAdapter(ArrayList<SongModel> songModels, Context context) {
+
+    public RcvFavoritesAdapter(ArrayList<SongModel> songModels, Context context, ArrayList<SongModel> songModelFilter) {
         this.songModels = songModels;
-        this.songModelFilter = songModels;
         this.context = context;
+        this.songModelFilter = songModelFilter;
     }
 
     public ArrayList<SongModel> getSongModels() {
@@ -40,31 +38,32 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
         this.songModels = songModels;
     }
 
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
 
     @NonNull
     @Override
-    public SongHomeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new SongHomeViewHolder(ItemRcvHomeBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+    public songFavoritesViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new songFavoritesViewHolder(ItemRcvFavoritesBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
-    public void onBindViewHolder(@NonNull SongHomeViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull songFavoritesViewHolder holder, int position) {
         holder.binding.titleView.setText(songModelFilter.get(position).getTitle());
         holder.binding.durationView.setText(FileUtils.getDuration(songModelFilter.get(position).getDuration()));
         holder.binding.sizeView.setText(FileUtils.getSize(songModelFilter.get(position).getSize()));
 
         Glide.with(context).load(songModelFilter.get(position).getImageSong())
                 .placeholder(context.getDrawable(R.drawable.bg)).into(holder.binding.artworkView);
-
-        holder.binding.moreVert.setOnClickListener(view1 -> {
-            iOnClickList.showDialogHome();
-        });
-
-
         holder.itemView.setOnClickListener(view -> {
-            iOnClickList.onClick(holder.getAdapterPosition());
+
         });
+
     }
 
     @Override
@@ -72,7 +71,6 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
         return songModelFilter.size();
     }
 
-    @Override
     public Filter getFilter() {
         return new Filter() {
             @Override
@@ -105,21 +103,12 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
 
     }
 
-    public void setIOnClickList(IOnClickList iOnClickList) {
-        this.iOnClickList = iOnClickList;
-    }
+    public static class songFavoritesViewHolder extends RecyclerView.ViewHolder {
+        private ItemRcvFavoritesBinding binding;
 
-    public static class SongHomeViewHolder extends RecyclerView.ViewHolder {
-        private ItemRcvHomeBinding binding;
-
-        public SongHomeViewHolder(ItemRcvHomeBinding binding) {
+        public songFavoritesViewHolder(ItemRcvFavoritesBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
-    }
-
-    public interface IOnClickList {
-        void onClick(int position);
-        void showDialogHome();
     }
 }

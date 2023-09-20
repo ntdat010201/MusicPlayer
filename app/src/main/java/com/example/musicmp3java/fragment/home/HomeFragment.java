@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.musicmp3java.R;
 import com.example.musicmp3java.databinding.FragmentHomeBinding;
 import com.example.musicmp3java.dialog.DialogBottomSheetHome;
 import com.example.musicmp3java.fragment.home.adapter.RcvHomeAdapter;
@@ -44,6 +46,7 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
     final String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
     private RcvHomeAdapter rcvHomeAdapter;
     private MusicManager musicManager;
+    private MediaPlayer mediaPlayer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,14 +64,17 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
     }
 
     private void initData() {
+        mediaPlayer = MusicManager.getInstanceMedia();
     }
+
     private void initView() {
         checkPermission();
         searchText();
     }
 
     private void initListener() {
-        //clickControlShowView();
+        clickControlShowView();
+        //clickHomePlayPauseBtn();
     }
 
     private void fetchSongs() {
@@ -89,7 +95,7 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
                 MediaStore.Audio.Media.DURATION,
                 MediaStore.Audio.Media.SIZE,
                 MediaStore.Audio.Media.ALBUM_ID,
-                MediaStore.Audio.Media.DATA };
+                MediaStore.Audio.Media.DATA};
 
         // order
         String sortOrder = MediaStore.Audio.Media.DATE_ADDED + " DESC ";
@@ -256,6 +262,7 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
         musicManager.setPosition(position);
         showPlayerView();
         homeSongNameView();
+        playMusic();
     }
 
     @Override
@@ -270,18 +277,42 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
 
     }
 
-    private void homeSongNameView(){
-        if (musicManager.getPosition() == 0){
+    private void homeSongNameView() {
+        if (musicManager.getPosition() == 0) {
             binding.homeSongNameView.setSelected(true);
             binding.homeSongNameView.setText(musicManager.getSongModels().get(musicManager.getPosition()).getTitle());
         }
 
     }
-    private void clickControlShowView(){
+
+    private void clickControlShowView() {
         binding.homeControlWrapper.setOnClickListener(view -> {
-            if (binding.layoutHome.activityPlayer.getVisibility() != View.VISIBLE){
-                binding.layoutHome.activityPlayer.setVisibility(View.VISIBLE);
+            Intent intent = new Intent(getActivity(), PlayerActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void playMusic() {
+        mediaPlayer.reset();
+        musicManager.play();
+        try {
+            mediaPlayer.prepare();
+            mediaPlayer.setOnPreparedListener(mediaPlayer -> mediaPlayer.start());
+        } catch (Exception e) {
+        }
+        binding.homePlayPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause,0,0,0);
+    }
+
+    private void clickHomePlayPauseBtn(){
+        binding.homePlayPauseBtn.setOnClickListener(view -> {
+            if (!mediaPlayer.isPlaying()){
+                mediaPlayer.start();
+                binding.homePlayPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause,0,0,0);
+            } else {
+                mediaPlayer.pause();
+                binding.homePlayPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_play_arrow,0,0,0);
             }
         });
     }
+
 }

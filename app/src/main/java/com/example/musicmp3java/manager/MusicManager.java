@@ -4,6 +4,7 @@ import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.example.musicmp3java.fragment.home.model.SongModel;
+import com.example.musicmp3java.fragment.play.PlayerActivity;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class MusicManager {
     private ArrayList<SongModel> songModels;
     private int position;
     private static MediaPlayer mediaPlayer;
-    FileInputStream fileInputStream;
+    private FileInputStream fileInputStream;
 
     private MusicManager() {
     }
@@ -56,15 +57,11 @@ public class MusicManager {
 
     public void play() {
         try {
-            mediaPlayer.reset();
             fileInputStream = new FileInputStream(songModels.get(position).getPath());
             mediaPlayer.setDataSource(fileInputStream.getFD());
-            mediaPlayer.prepare();
-            mediaPlayer.setOnPreparedListener(MediaPlayer::start);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public void pause() {
@@ -72,7 +69,6 @@ public class MusicManager {
     }
 
     public void previous() {
-        mediaPlayer.reset();
         int pos = position - 1;
         if (pos < 0) {
             pos = songModels.size() - 1;
@@ -84,13 +80,11 @@ public class MusicManager {
             fileInputStream = new FileInputStream(songModels.get(position).getPath());
             mediaPlayer.setDataSource(fileInputStream.getFD());
             mediaPlayer.prepare();
-            mediaPlayer.setOnPreparedListener(MediaPlayer::start);
         } catch (Exception e) {
         }
     }
 
     public void next() {
-        mediaPlayer.reset();
         int pos = position + 1;
         if (pos > songModels.size()-1) {
             setPosition(0);
@@ -101,11 +95,9 @@ public class MusicManager {
             fileInputStream = new FileInputStream(songModels.get(position).getPath());
             mediaPlayer.setDataSource(fileInputStream.getFD());
             mediaPlayer.prepare();
-            mediaPlayer.setOnPreparedListener(MediaPlayer::start);
         } catch (Exception e) {
         }
     }
-
 
 
 }
