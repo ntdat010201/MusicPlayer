@@ -36,6 +36,7 @@ public class PlayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityPlayerBinding.inflate(LayoutInflater.from(this));
+
         setContentView(binding.getRoot());
         initData();
         initView();
@@ -186,7 +187,7 @@ public class PlayerActivity extends AppCompatActivity {
         }
     }
 
-    private void upDateView() {
+    public void upDateView() {
         songNameView();
         setArtworkView();
         setSeekBar();
