@@ -1,4 +1,4 @@
-package com.example.musicmp3java.utils;
+package com.example.musicmp3java.inter;
 
 public interface PlayAble {
     void onTrackPrevious();

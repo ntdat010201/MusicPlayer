@@ -48,5 +48,8 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     //notification android support
     implementation "androidx.media:media:1.2.0"
+    //roomDataBase
+    implementation "androidx.room:room-runtime:2.5.2"
+    annotationProcessor "androidx.room:room-compiler:2.5.2"
 
 }

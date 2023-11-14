@@ -2,7 +2,6 @@ package com.example.musicmp3java.fragment.home;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,13 +9,13 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,24 +28,27 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.musicmp3java.R;
+import com.example.musicmp3java.MainActivity;
+import com.example.musicmp3java.database.SongModelDatabase;
 import com.example.musicmp3java.databinding.FragmentHomeBinding;
 import com.example.musicmp3java.dialog.DialogBottomSheetHome;
 import com.example.musicmp3java.fragment.home.adapter.RcvHomeAdapter;
 import com.example.musicmp3java.fragment.home.model.SongModel;
-import com.example.musicmp3java.fragment.play.PlayerActivity;
+import com.example.musicmp3java.play.PlayerActivity;
 import com.example.musicmp3java.manager.MusicManager;
+import com.example.musicmp3java.service.MusicService;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
-public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickList {
+public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickListH {
     private FragmentHomeBinding binding;
     ActivityResultLauncher<String> storagePermissionLauncher;
     final String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
     private RcvHomeAdapter rcvHomeAdapter;
     private MusicManager musicManager;
-    private MediaPlayer mediaPlayer;
+    private DialogBottomSheetHome dialogBottomSheetHome;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,8 +56,7 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(LayoutInflater.from(requireContext()), container, false);
         initData();
         initView();
@@ -64,7 +65,7 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
     }
 
     private void initData() {
-        mediaPlayer = MusicManager.getInstanceMedia();
+        dialogBottomSheetHome = new DialogBottomSheetHome();
     }
 
     private void initView() {
@@ -74,7 +75,6 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
 
     private void initListener() {
         clickControlShowView();
-        //clickHomePlayPauseBtn();
     }
 
     private void fetchSongs() {
@@ -89,13 +89,7 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
         }
 
         //define projection
-        String[] projection = new String[]{
-                MediaStore.Audio.Media._ID,
-                MediaStore.Audio.Media.DISPLAY_NAME,
-                MediaStore.Audio.Media.DURATION,
-                MediaStore.Audio.Media.SIZE,
-                MediaStore.Audio.Media.ALBUM_ID,
-                MediaStore.Audio.Media.DATA};
+        String[] projection = new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.SIZE, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA};
 
         // order
         String sortOrder = MediaStore.Audio.Media.DATE_ADDED + " DESC ";
@@ -103,17 +97,17 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
         //get the songs
         try (Cursor cursor = requireContext().getContentResolver().query(mediaStoreUri, projection, null, null, sortOrder)) {
             //cache cursor indices
-            int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID);
+//            int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID);
             int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME);
             int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION);
             int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE);
             int pathIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
 
-
+            int i = 0;
             //clear the previous loaded before adding loading again
             while (cursor.moveToNext()) {
                 //get the value of a  column for a given audio file
-                long id = cursor.getLong(idColumn);
+//                long id = cursor.getLong(idColumn);
                 String name = cursor.getString(nameColumn);
                 int duration = cursor.getInt(durationColumn);
                 int size = cursor.getInt(sizeColumn);
@@ -121,23 +115,44 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
 
 
                 //song uri
-                Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
+//                Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
                 //remove . mp3 extension from the song's name
                 name = name.substring(0, name.lastIndexOf("."));
                 // image song
                 Bitmap imageSong = getImageSong(path);
 
                 //song
-                SongModel songModel = new SongModel(name, uri, imageSong, size, duration, path);
-                //add song item to song list
+                SongModel songModel = new SongModel(i, name /*uri*/, imageSong, size, duration, path);
+                //add song item to so2ng list
                 songModels.add(songModel);
+                i++;
             }
-            //display songs
+
             musicManager = MusicManager.getInstance();
             musicManager.setSongModels(songModels);
-
             rcvHomeAdapter = new RcvHomeAdapter(musicManager.getSongModels(), requireContext());
-            rcvHomeAdapter.setIOnClickList(this);
+
+
+
+            List<SongModel> allList = SongModelDatabase.getInstance(requireContext()).SongModelDAO().getArrSongModel();
+
+            for(int j = 0; j < songModels.size(); j++) {
+                boolean exist = false;
+                for(SongModel songModel : allList) {
+                    if(songModel.equals(songModels.get(j))) {
+                        exist = true;
+                        break;
+                    }
+                }
+                if(!exist) {
+                    SongModelDatabase.getInstance(requireContext()).SongModelDAO().insertSongModel(songModels.get(j));
+                }
+            }
+
+//            musicManager.setSongModels((ArrayList<SongModel>) SongModelDatabase.getInstance(requireContext())
+//                    .SongModelDAO().getArrSongModel());
+
+            rcvHomeAdapter.setiOnClickListH(this);
             showSongs(musicManager.getSongModels());
         }
     }
@@ -148,13 +163,9 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
             Toast.makeText(requireContext(), "No song", Toast.LENGTH_SHORT).show();
             return;
         }
-
         binding.edtSearchHome.addTextChangedListener(new TextWatcher() {
-
-
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -164,7 +175,6 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
         binding.RecyclerViewHome.setAdapter(rcvHomeAdapter);
@@ -253,36 +263,29 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
             imm.hideSoftInputFromWindow(binding.edtSearchHome.getWindowToken(), 0);
             binding.edtSearchHome.setText(null);
         });
-
-
     }
 
     @Override
     public void onClick(int position) {
         musicManager.setPosition(position);
+        startService();
         showPlayerView();
         homeSongNameView();
-        playMusic();
     }
 
     @Override
-    public void showDialogHome() {
-        DialogBottomSheetHome.showDialogBTHome(requireContext());
+    public void showDialogHome(int position) {
+        dialogBottomSheetHome.showDialogBTHome((MainActivity) requireActivity(), position, rcvHomeAdapter);
     }
-
 
     private void showPlayerView() {
         Intent intent = new Intent(getActivity(), PlayerActivity.class);
         startActivity(intent);
-
     }
 
     private void homeSongNameView() {
-        if (musicManager.getPosition() == 0) {
-            binding.homeSongNameView.setSelected(true);
-            binding.homeSongNameView.setText(musicManager.getSongModels().get(musicManager.getPosition()).getTitle());
-        }
-
+        binding.homeSongNameView.setSelected(true);
+        binding.homeSongNameView.setText(musicManager.getSongModels().get(musicManager.getPosition()).getTitle());
     }
 
     private void clickControlShowView() {
@@ -292,27 +295,13 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
         });
     }
 
-    private void playMusic() {
-        mediaPlayer.reset();
-        musicManager.play();
-        try {
-            mediaPlayer.prepare();
-            mediaPlayer.setOnPreparedListener(mediaPlayer -> mediaPlayer.start());
-        } catch (Exception e) {
+    private void startService() {
+        Intent intent = new Intent(requireContext(), MusicService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            requireContext().startForegroundService(intent);
+        } else {
+            requireContext().startService(intent);
         }
-        binding.homePlayPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause,0,0,0);
-    }
-
-    private void clickHomePlayPauseBtn(){
-        binding.homePlayPauseBtn.setOnClickListener(view -> {
-            if (!mediaPlayer.isPlaying()){
-                mediaPlayer.start();
-                binding.homePlayPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_pause,0,0,0);
-            } else {
-                mediaPlayer.pause();
-                binding.homePlayPauseBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_play_arrow,0,0,0);
-            }
-        });
     }
 
 }

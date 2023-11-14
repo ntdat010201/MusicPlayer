@@ -7,7 +7,7 @@
     tools:context=".fragment.favorites.FavoritesFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/toolBarHome"
+        android:id="@+id/toolBarFavorites"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="#EFEFEF"
@@ -17,7 +17,7 @@
 
 
         <ImageView
-            android:id="@+id/icSearchHome"
+            android:id="@+id/icSearchFavorites"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
@@ -28,7 +28,7 @@
             app:tint="@color/black" />
 
         <ImageView
-            android:id="@+id/icCloseHome"
+            android:id="@+id/icCloseFavorites"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
@@ -39,13 +39,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/edtSearchHome"
+            android:id="@+id/edtSearchFavorites"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginHorizontal="4dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/icSearchHome"
+            app:layout_constraintEnd_toStartOf="@+id/icSearchFavorites"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,5 +58,5 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolBarHome" />
+        app:layout_constraintTop_toBottomOf="@+id/toolBarFavorites" />
 </androidx.constraintlayout.widget.ConstraintLayout>

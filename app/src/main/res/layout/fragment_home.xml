@@ -101,18 +101,18 @@
             app:layout_constraintVertical_bias="0.423"
             app:layout_constraintWidth_percent="0.6" />
 
-        <TextView
-            android:id="@+id/homeSkipPreviousBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:drawableStartCompat="@drawable/ic_skip_previous"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/homePlayPauseBtn"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_percent="0.1"
-            tools:ignore="MissingConstraints" />
+<!--        <TextView-->
+<!--            android:id="@+id/homeSkipPreviousBtn"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:drawableStartCompat="@drawable/ic_skip_previous"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toStartOf="@id/homePlayPauseBtn"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintWidth_percent="0.1"-->
+<!--            tools:ignore="MissingConstraints" />-->
 
-        <TextView
+        <!--<TextView
             android:id="@+id/homePlayPauseBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -132,7 +132,8 @@
             app:layout_constraintStart_toEndOf="@id/homePlayPauseBtn"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_percent="0.1"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

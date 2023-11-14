@@ -1,32 +1,33 @@
-package com.example.musicmp3java;
+package com.example.musicmp3java.fragment.home.model;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "song")
-public class SongModel implements Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    int id;
-    String title;
+public class SongModel {
+    @PrimaryKey
+    public int id;
+    public String title;
 //    Uri uri;
-
-
     @Ignore
-    Bitmap imageSong;
-    int size;
-    int duration;
+    public Bitmap imageSong;
+    public int size;
+    public int duration;
 
-    String path;
+    public String path;
 
-    boolean favorite = false;
+    public boolean favorite = false;
 
-    public SongModel(String title /*Uri uri,*/, int size, int duration, String path) {
+    public SongModel(int id ,String title /*Uri uri,*/, int size, int duration, String path) {
+        this.id =id;
         this.title = title;
         /*this.uri = uri;*/
         this.imageSong = imageSong;
@@ -35,7 +36,8 @@ public class SongModel implements Parcelable {
         this.path = path;
     }
 
-    public SongModel(String title, /*Uri uri,*/ Bitmap imageSong, int size, int duration, String path) {
+    public SongModel(int id, String title, /*Uri uri,*/ Bitmap imageSong, int size, int duration, String path) {
+        this.id =id;
         this.title = title;
         /*this.uri = uri;*/
         this.imageSong = imageSong;
@@ -43,29 +45,6 @@ public class SongModel implements Parcelable {
         this.duration = duration;
         this.path = path;
     }
-
-
-    protected SongModel(Parcel in) {
-        title = in.readString();
-//        uri = in.readParcelable(Uri.class.getClassLoader());
-        imageSong = in.readParcelable(Bitmap.class.getClassLoader());
-        size = in.readInt();
-        duration = in.readInt();
-        path = in.readString();
-        favorite = in.readBoolean();
-    }
-
-    public static final Creator<SongModel> CREATOR = new Creator<SongModel>() {
-        @Override
-        public SongModel createFromParcel(Parcel in) {
-            return new SongModel(in);
-        }
-
-        @Override
-        public SongModel[] newArray(int size) {
-            return new SongModel[size];
-        }
-    };
 
 
     public String getTitle() {
@@ -117,20 +96,24 @@ public class SongModel implements Parcelable {
     }
 
     @Override
-    public int describeContents() {
-        return 0;
+    public boolean equals(@Nullable Object obj) {
+        SongModel songModel = (SongModel) obj;
+        if(this.title != songModel.title) {
+            return false;
+        }
+        if (this.size != songModel.size){
+            return false;
+        }
+        if (this.duration != songModel.duration){
+            return false;
+        }
+        if (this.path != songModel.path){
+            return false;
+        }
+        if (this.imageSong != songModel.imageSong){
+            return false;
+        }
+
+        return true;
     }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
-
-        parcel.writeString(title);
-//        parcel.writeParcelable(uri, i);
-        parcel.writeParcelable(imageSong, i);
-        parcel.writeInt(size);
-        parcel.writeInt(duration);
-        parcel.writeString(path);
-        parcel.writeBoolean(false);
-    }
-
 }

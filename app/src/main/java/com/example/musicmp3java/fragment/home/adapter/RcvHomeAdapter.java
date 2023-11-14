@@ -2,7 +2,6 @@ package com.example.musicmp3java.fragment.home.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Filter;
@@ -20,15 +19,14 @@ import com.example.musicmp3java.utils.FileUtils;
 import java.util.ArrayList;
 
 public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHomeViewHolder> implements Filterable {
-    private IOnClickList iOnClickList;
-
+    private IOnClickListH iOnClickListH;
     private Context context;
     private ArrayList<SongModel> songModels;
-    private ArrayList<SongModel> songModelFilter;
+    private ArrayList<SongModel> SongModelilter;
 
     public RcvHomeAdapter(ArrayList<SongModel> songModels, Context context) {
         this.songModels = songModels;
-        this.songModelFilter = songModels;
+        this.SongModelilter = songModels;
         this.context = context;
     }
 
@@ -50,26 +48,30 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(@NonNull SongHomeViewHolder holder, int position) {
-        holder.binding.titleView.setText(songModelFilter.get(position).getTitle());
-        holder.binding.durationView.setText(FileUtils.getDuration(songModelFilter.get(position).getDuration()));
-        holder.binding.sizeView.setText(FileUtils.getSize(songModelFilter.get(position).getSize()));
+        holder.binding.titleView.setText(SongModelilter.get(position).getTitle());
+        holder.binding.durationView.setText(FileUtils.getDuration(SongModelilter.get(position).getDuration()));
+        holder.binding.sizeView.setText(FileUtils.getSize(SongModelilter.get(position).getSize()));
 
-        Glide.with(context).load(songModelFilter.get(position).getImageSong())
+        Glide.with(context).load(SongModelilter.get(position).getImageSong())
                 .placeholder(context.getDrawable(R.drawable.bg)).into(holder.binding.artworkView);
 
-        holder.binding.moreVert.setOnClickListener(view1 -> {
-            iOnClickList.showDialogHome();
+        holder.binding.moreVert.setOnClickListener(view -> {
+            iOnClickListH.showDialogHome(holder.getAdapterPosition());
+
         });
 
-
         holder.itemView.setOnClickListener(view -> {
-            iOnClickList.onClick(holder.getAdapterPosition());
+            iOnClickListH.onClick(holder.getAdapterPosition());
         });
     }
 
     @Override
     public int getItemCount() {
-        return songModelFilter.size();
+        if (SongModelilter != null){
+            return SongModelilter.size();
+        } else {
+            return 0;
+        }
     }
 
     @Override
@@ -79,7 +81,7 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
             protected FilterResults performFiltering(CharSequence charSequence) {
                 String charString = charSequence.toString();
                 if (charString.isEmpty()) {
-                    songModelFilter = songModels;
+                    SongModelilter = songModels;
                 } else {
                     ArrayList<SongModel> filteredList = new ArrayList<>();
                     for (SongModel row : songModels) {
@@ -88,25 +90,23 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
                         }
                     }
 
-                    songModelFilter = filteredList;
+                    SongModelilter = filteredList;
                 }
 
                 FilterResults filterResults = new FilterResults();
-                filterResults.values = songModelFilter;
+                filterResults.values = SongModelilter;
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                songModelFilter = (ArrayList<SongModel>) filterResults.values;
+                SongModelilter = (ArrayList<SongModel>) filterResults.values;
                 notifyDataSetChanged();
             }
         };
-
     }
-
-    public void setIOnClickList(IOnClickList iOnClickList) {
-        this.iOnClickList = iOnClickList;
+    public void setiOnClickListH(IOnClickListH iOnClickListH) {
+        this.iOnClickListH = iOnClickListH;
     }
 
     public static class SongHomeViewHolder extends RecyclerView.ViewHolder {
@@ -118,8 +118,8 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
         }
     }
 
-    public interface IOnClickList {
+    public interface IOnClickListH {
         void onClick(int position);
-        void showDialogHome();
+        void showDialogHome(int position);
     }
 }
