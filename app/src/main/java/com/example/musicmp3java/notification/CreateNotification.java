@@ -14,7 +14,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.example.musicmp3java.R;
 import com.example.musicmp3java.broadcastReceiver.MyBroadcastReceiver;
-import com.example.musicmp3java.fragment.home.model.SongModel;
+import com.example.musicmp3java.model.SongModel;
 import com.example.musicmp3java.utils.Const;
 
 import java.util.ArrayList;
@@ -60,10 +60,10 @@ public class CreateNotification {
                 .setContentTitle(songModels.get(pos).getTitle())
                 .setLargeIcon(songModels.get(pos).getImageSong())
                 //icon play
-                .addAction(drw_previous, "Previous", pendingIntentPrevious)        //0
-                .addAction(playBottom, "PlayOrPause", pendingIntentPlayOrPause)               //1
-                .addAction(drw_next, "Next", pendingIntentNext)                //2
-//                .addAction(R.drawable.ic_close, "close", intentClose)                //3
+                .addAction(drw_previous, "Previous", pendingIntentPrevious)          //0
+                .addAction(playBottom, "PlayOrPause", pendingIntentPlayOrPause)      //1
+                .addAction(drw_next, "Next", pendingIntentNext)                      //2
+//                .addAction(R.drawable.ic_close, "close", intentClose)                   //3
 
                 .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(1 /* #1: pause button */)

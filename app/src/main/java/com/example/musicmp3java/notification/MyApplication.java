@@ -22,7 +22,6 @@ public class MyApplication extends Application {
             if (manager != null){
                 manager.createNotificationChannel(channel);
             }
-
         }
     }
 }

@@ -6,7 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.example.musicmp3java.fragment.home.model.SongModel;
+import com.example.musicmp3java.model.SongModel;
 
 import java.util.List;
 

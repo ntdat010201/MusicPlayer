@@ -1,6 +1,6 @@
 package com.example.musicmp3java.manager;
 
-import com.example.musicmp3java.fragment.home.model.SongModel;
+import com.example.musicmp3java.model.SongModel;
 
 import java.util.ArrayList;
 
@@ -29,37 +29,6 @@ public class MusicManager {
     public void setPosition(int position) {
         this.position = position;
     }
-
-
-
-//    public void previous() {
-//        int pos = position - 1;
-//        if (pos < 0) {
-//            pos = songModels.size() - 1;
-//            setPosition(pos);
-//        } else {
-//            setPosition(pos);
-//        }
-//        try {
-//            mediaPlayer.setDataSource(songModels.get(position).getPath());
-//            mediaPlayer.prepare();
-//        } catch (Exception e) {
-//        }
-//    }
-
-//    public void next() {
-//        int pos = position + 1;
-//        if (pos > songModels.size()-1) {
-//            setPosition(0);
-//        } else {
-//            setPosition(pos);
-//        }
-//        try {
-//            mediaPlayer.setDataSource(songModels.get(position).getPath());
-//            mediaPlayer.prepare();
-//        } catch (Exception e) {
-//        }
-//    }
 
 
 }

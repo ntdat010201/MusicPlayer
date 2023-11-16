@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="Options"
+        android:text="Chọn"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="25dp"
@@ -25,13 +25,13 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_playlist_add" />
+            android:src="@drawable/ic_share" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:text="Thêm vào danh sách phát"
+            android:text="Chia sẻ"
             android:textSize="16sp" />
     </LinearLayout>
 
@@ -84,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
-            android:text="Close"
+            android:text="Thoát"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="25dp" />

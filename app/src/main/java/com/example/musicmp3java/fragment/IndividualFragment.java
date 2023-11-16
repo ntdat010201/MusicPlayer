@@ -1,4 +1,4 @@
-package com.example.musicmp3java.fragment.individual;
+package com.example.musicmp3java.fragment;
 
 import android.os.Bundle;
 

@@ -1,10 +1,7 @@
-package com.example.musicmp3java.fragment.home;
+package com.example.musicmp3java.fragment;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,25 +12,21 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.musicmp3java.MainActivity;
 import com.example.musicmp3java.database.SongModelDatabase;
 import com.example.musicmp3java.databinding.FragmentHomeBinding;
 import com.example.musicmp3java.dialog.DialogBottomSheetHome;
-import com.example.musicmp3java.fragment.home.adapter.RcvHomeAdapter;
-import com.example.musicmp3java.fragment.home.model.SongModel;
+import com.example.musicmp3java.adapter.RcvHomeAdapter;
+import com.example.musicmp3java.model.SongModel;
 import com.example.musicmp3java.play.PlayerActivity;
 import com.example.musicmp3java.manager.MusicManager;
 import com.example.musicmp3java.service.MusicService;
@@ -44,8 +37,6 @@ import java.util.List;
 
 public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickListH {
     private FragmentHomeBinding binding;
-    ActivityResultLauncher<String> storagePermissionLauncher;
-    final String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
     private RcvHomeAdapter rcvHomeAdapter;
     private MusicManager musicManager;
     private DialogBottomSheetHome dialogBottomSheetHome;
@@ -69,7 +60,7 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
     }
 
     private void initView() {
-        checkPermission();
+        fetchSongs();
         searchText();
     }
 
@@ -79,7 +70,6 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
 
     private void fetchSongs() {
 
-        //define a list to cary  songs
         ArrayList<SongModel> songModels = new ArrayList<>();
         Uri mediaStoreUri;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -87,43 +77,27 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
         } else {
             mediaStoreUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         }
-
-        //define projection
         String[] projection = new String[]{MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.DURATION, MediaStore.Audio.Media.SIZE, MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.DATA};
 
-        // order
         String sortOrder = MediaStore.Audio.Media.DATE_ADDED + " DESC ";
 
-        //get the songs
         try (Cursor cursor = requireContext().getContentResolver().query(mediaStoreUri, projection, null, null, sortOrder)) {
-            //cache cursor indices
-//            int idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID);
             int nameColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME);
             int durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION);
             int sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE);
             int pathIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
 
             int i = 0;
-            //clear the previous loaded before adding loading again
             while (cursor.moveToNext()) {
-                //get the value of a  column for a given audio file
-//                long id = cursor.getLong(idColumn);
                 String name = cursor.getString(nameColumn);
                 int duration = cursor.getInt(durationColumn);
                 int size = cursor.getInt(sizeColumn);
                 String path = cursor.getString(pathIdColumn);
 
-
-                //song uri
-//                Uri uri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id);
-                //remove . mp3 extension from the song's name
                 name = name.substring(0, name.lastIndexOf("."));
-                // image song
                 Bitmap imageSong = getImageSong(path);
 
-                //song
-                SongModel songModel = new SongModel(i, name /*uri*/, imageSong, size, duration, path);
-                //add song item to so2ng list
+                SongModel songModel = new SongModel(i, name , imageSong, size, duration, path);
                 songModels.add(songModel);
                 i++;
             }
@@ -148,9 +122,6 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
                     SongModelDatabase.getInstance(requireContext()).SongModelDAO().insertSongModel(songModels.get(j));
                 }
             }
-
-//            musicManager.setSongModels((ArrayList<SongModel>) SongModelDatabase.getInstance(requireContext())
-//                    .SongModelDAO().getArrSongModel());
 
             rcvHomeAdapter.setiOnClickListH(this);
             showSongs(musicManager.getSongModels());
@@ -205,40 +176,6 @@ public class HomeFragment extends Fragment implements RcvHomeAdapter.IOnClickLis
         return art;
     }
 
-    private void userResponses() {
-
-        if (ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-            fetchSongs();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (shouldShowRequestPermissionRationale(permission)) {
-                //show an UI to user explaining why we need this permission
-                //use alert dialog
-
-                new AlertDialog.Builder(requireContext()).setTitle("Requesting permission").setMessage("Allow us to fetch songs on your device ").setPositiveButton("Allow", (dialogInterface, i) -> {
-                    //request permission
-                    storagePermissionLauncher.launch(permission);
-                }).setNegativeButton("Cancel", (dialogInterface, i) -> {
-                    Toast.makeText(requireContext(), "you denied us to show songs", Toast.LENGTH_SHORT).show();
-                    dialogInterface.dismiss();
-                }).show();
-            }
-        } else {
-            Toast.makeText(requireContext(), "you denied us to show songs", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void checkPermission() {
-        storagePermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
-            if (granted) {
-                //fetch songs
-                fetchSongs();
-
-            } else {
-                userResponses();
-            }
-        });
-        storagePermissionLauncher.launch(permission);
-    }
 
     private void searchText() {
         binding.icSearchHome.setOnClickListener(view -> {

@@ -16,7 +16,6 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         context.sendBroadcast(new Intent("TRACK_TRACK")
                 .putExtra("actionname",intent.getAction()));
-
     }
 
 }

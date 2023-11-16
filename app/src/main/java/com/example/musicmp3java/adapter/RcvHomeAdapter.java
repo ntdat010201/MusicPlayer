@@ -1,4 +1,4 @@
-package com.example.musicmp3java.fragment.home.adapter;
+package com.example.musicmp3java.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.musicmp3java.R;
 import com.example.musicmp3java.databinding.ItemRcvHomeBinding;
-import com.example.musicmp3java.fragment.home.model.SongModel;
+import com.example.musicmp3java.model.SongModel;
 import com.example.musicmp3java.utils.FileUtils;
 
 import java.util.ArrayList;
@@ -22,11 +22,11 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
     private IOnClickListH iOnClickListH;
     private Context context;
     private ArrayList<SongModel> songModels;
-    private ArrayList<SongModel> SongModelilter;
+    private ArrayList<SongModel> SongModelFilter;
 
     public RcvHomeAdapter(ArrayList<SongModel> songModels, Context context) {
         this.songModels = songModels;
-        this.SongModelilter = songModels;
+        this.SongModelFilter = songModels;
         this.context = context;
     }
 
@@ -38,7 +38,6 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
         this.songModels = songModels;
     }
 
-
     @NonNull
     @Override
     public SongHomeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -48,11 +47,11 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
     @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(@NonNull SongHomeViewHolder holder, int position) {
-        holder.binding.titleView.setText(SongModelilter.get(position).getTitle());
-        holder.binding.durationView.setText(FileUtils.getDuration(SongModelilter.get(position).getDuration()));
-        holder.binding.sizeView.setText(FileUtils.getSize(SongModelilter.get(position).getSize()));
+        holder.binding.titleView.setText(SongModelFilter.get(position).getTitle());
+        holder.binding.durationView.setText(FileUtils.getDuration(SongModelFilter.get(position).getDuration()));
+        holder.binding.sizeView.setText(FileUtils.getSize(SongModelFilter.get(position).getSize()));
 
-        Glide.with(context).load(SongModelilter.get(position).getImageSong())
+        Glide.with(context).load(SongModelFilter.get(position).getImageSong())
                 .placeholder(context.getDrawable(R.drawable.bg)).into(holder.binding.artworkView);
 
         holder.binding.moreVert.setOnClickListener(view -> {
@@ -67,8 +66,8 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
 
     @Override
     public int getItemCount() {
-        if (SongModelilter != null){
-            return SongModelilter.size();
+        if (SongModelFilter != null){
+            return SongModelFilter.size();
         } else {
             return 0;
         }
@@ -81,7 +80,7 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
             protected FilterResults performFiltering(CharSequence charSequence) {
                 String charString = charSequence.toString();
                 if (charString.isEmpty()) {
-                    SongModelilter = songModels;
+                    SongModelFilter = songModels;
                 } else {
                     ArrayList<SongModel> filteredList = new ArrayList<>();
                     for (SongModel row : songModels) {
@@ -90,17 +89,17 @@ public class RcvHomeAdapter extends RecyclerView.Adapter<RcvHomeAdapter.SongHome
                         }
                     }
 
-                    SongModelilter = filteredList;
+                    SongModelFilter = filteredList;
                 }
 
                 FilterResults filterResults = new FilterResults();
-                filterResults.values = SongModelilter;
+                filterResults.values = SongModelFilter;
                 return filterResults;
             }
 
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                SongModelilter = (ArrayList<SongModel>) filterResults.values;
+                SongModelFilter = (ArrayList<SongModel>) filterResults.values;
                 notifyDataSetChanged();
             }
         };

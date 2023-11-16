@@ -1,11 +1,7 @@
-package com.example.musicmp3java.fragment.home.model;
+package com.example.musicmp3java.model;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -16,7 +12,6 @@ public class SongModel {
     @PrimaryKey
     public int id;
     public String title;
-//    Uri uri;
     @Ignore
     public Bitmap imageSong;
     public int size;
@@ -26,20 +21,17 @@ public class SongModel {
 
     public boolean favorite = false;
 
-    public SongModel(int id ,String title /*Uri uri,*/, int size, int duration, String path) {
+    public SongModel(int id ,String title , int size, int duration, String path) {
         this.id =id;
         this.title = title;
-        /*this.uri = uri;*/
-        this.imageSong = imageSong;
         this.size = size;
         this.duration = duration;
         this.path = path;
     }
 
-    public SongModel(int id, String title, /*Uri uri,*/ Bitmap imageSong, int size, int duration, String path) {
+    public SongModel(int id, String title, Bitmap imageSong, int size, int duration, String path) {
         this.id =id;
         this.title = title;
-        /*this.uri = uri;*/
         this.imageSong = imageSong;
         this.size = size;
         this.duration = duration;
@@ -54,14 +46,6 @@ public class SongModel {
     public void setTitle(String title) {
         this.title = title;
     }
-
-//    public Uri getUri() {
-//        return uri;
-//    }
-//
-//    public void setUri(Uri uri) {
-//        this.uri = uri;
-//    }
 
     public Bitmap getImageSong() {
         return imageSong;

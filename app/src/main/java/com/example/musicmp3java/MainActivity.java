@@ -1,14 +1,15 @@
 package com.example.musicmp3java;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.musicmp3java.databinding.ActivityMainBinding;
-import com.example.musicmp3java.fragment.favorites.FavoritesFragment;
-import com.example.musicmp3java.fragment.home.HomeFragment;
-import com.example.musicmp3java.fragment.individual.IndividualFragment;
+import com.example.musicmp3java.fragment.FavoritesFragment;
+import com.example.musicmp3java.fragment.HomeFragment;
+import com.example.musicmp3java.fragment.IndividualFragment;
 import com.example.musicmp3java.viewpager.adapter.MyViewPagerAdapter;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("ResourceType")
     private void tabLayoutMediator() {
         binding.viewPager.setOffscreenPageLimit(3);
         binding.viewPager.setAdapter(myViewPagerAdapter);
@@ -52,16 +54,13 @@ public class MainActivity extends AppCompatActivity {
 
             switch (position) {
                 case 0:
-                    tab.setIcon(R.drawable.ic_small_icon);
-                    tab.setText("Home");
+                    tab.setIcon(R.drawable.ic_home);
                     break;
                 case 1:
-                    tab.setIcon(R.drawable.ic_small_icon);
-                    tab.setText("Favorites");
+                    tab.setIcon(R.drawable.ic_favorite);
                     break;
                 case 2:
-                    tab.setIcon(R.drawable.ic_small_icon);
-                    tab.setText("Individual");
+                    tab.setIcon(R.drawable.ic_insert_invitation);
                     break;
 
             }
@@ -76,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     public FavoritesFragment getFavoritesFragment() {
         return favoritesFragment;
     }
+
     public IndividualFragment getIndividualFragment() {
         return individualFragment;
     }

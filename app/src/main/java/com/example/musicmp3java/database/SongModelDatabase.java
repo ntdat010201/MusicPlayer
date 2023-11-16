@@ -6,7 +6,7 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-import com.example.musicmp3java.fragment.home.model.SongModel;
+import com.example.musicmp3java.model.SongModel;
 
 
 @Database(entities = {SongModel.class},version = 1)
